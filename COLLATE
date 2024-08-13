@@ -1,0 +1,52 @@
+COLLATE
+
+Por vezes, colunas entre tabelas estão setadas no banco de diferentes maneiras, como o erro que eu achei no dia 08/08/2024, fazendo a junção de bancos de Santander discagens e Santander tipicacao. 
+
+
+Copiando do stack overflow em português: 
+
+Segundo a documentação do COLLATE (traduzido by Google) é:
+
+COLLATE é uma cláusula que pode ser aplicada a uma definição de banco de dados ou a uma definição de coluna para definir o agrupamento ou a uma expressão de seqüência de caracteres para aplicar um elenco de agrupamento.
+
+Em resumo, especifica o conjunto de caracteres e regras que está utilizando.
+
+Ao separar o COLLATE LATIN1_GENERAL_CS_AI, temos a seguintes funções.
+
+LATIN1: Define o charset que será utilizado. Você pode fazer isso para o banco ou por consulta, como mostrado na resposta que você postou.
+
+CS: Especifica como Case Sensitive;
+
+AI: Especifica como Accent Insensitive.
+
+Também temos outras opções, como:
+
+CI: Especifica como Case Insensitive.
+
+AS: Especifica como Accent Sensitive.
+
+BIN: Especifica a ordem de classificação a ser utilizada como binária.
+
+Então, para fazer Joins em SQL server e as colunas estiverem de forma diferente nessa definição, ex dos bancos: Latin1_General_CI_AS e Latin1_General_CS_AI, tenho que fazer esse COLLATE e transformar ambas as colunas para o mesmo tipo. 
+
+EXEMPLOS:
+
+update Table1
+set Table1.Name=[release].[People].[Details].Name
+from Table1  inner join [release].[People].[Details]  
+     on Table1.AccountNumber = [release].[People].[Details].AccountNumber 
+      COLLATE 'Latin1_General_CI_AS' 
+
+
+update Table1
+ set Table1.Name=rel.Name
+ from Table1  
+  inner join [release].[People].[Details] rel 
+      on Table1.AccountNumber COLLATE 'Latin1_General_CI_AS'  =
+         rel.AccountNumber COLLATE 'Latin1_General_CI_AS' 
+
+LINKS LIDOS: 
+
+https://pt.stackoverflow.com/questions/209779/o-que-collate-latin1-general-cs-ai-faz
+
+https://stackoverflow.com/questions/54707479/on-update-from-a-table-on-a-different-database-cannot-resolve-the-collation-con
